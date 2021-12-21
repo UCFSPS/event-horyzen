@@ -6,6 +6,7 @@ authors = ["David Wright <davecwright@knights.ucf.edu>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+PyYAML = "^6.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
