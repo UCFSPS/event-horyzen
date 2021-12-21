@@ -1,0 +1,38 @@
+---
+background_choice: "Kerr"
+
+kerr-newman:
+  # Natural (geometrized) units
+  mass: 1
+  charge: 1
+  angular_momentum: 1
+
+kerr:
+  # Natural (geometrized) units
+  mass: 1
+  charge: 0  # This must be zero
+  angular_momentum: 1
+
+reissner-nordstrom:
+  # Natural (geometrized) units
+  mass: 1
+  charge: 1
+  angular_momentum: 0  # This must be zero
+
+schwarzschild:
+  # Natural (geometrized) units
+  mass: 1
+  charge: 0  # This must be zero
+  angular_momentum: 0  # This must be zero
+
+test_particle:
+  # Natural (geometrized) units
+  mass: 1
+  p0:
+    - x
+    - y
+    - z
+  r0:
+    - x
+    - y
+    - z
