@@ -154,34 +154,59 @@ def dif(func,x):
 ################### Metric Components ###################
 
 # Diagonal components of the metric
+
+# DCW Tue 21 Dec 14:16:33 EST 2021
+# We are going to use the general Kerr-Newman metric in Boyer-Lindquist coordinates
+# Here they are in non-natural units, but we'll be setting G=c=1 in the computation.
+# \begin{align}
+# g00 &= \frac{(a\sin{\theta})^2-\Delta}{\rho^2} \\
+# g11 &= \frac{\rho^2}{\Delta} \\
+# g22 &=  \rho^2 \\
+# g33 &= \frac{((r^2+a^2)\sin{\theta})^2 - (a\sin^2{\theta})^2\Delta}{\rho^2} \\
+# g03 &= \frac{(\Delta^2-2(r^2+a^2))a\sin^2{\theta}}{\rho^2} \\
+# a      &= \frac{J}{Mc} \\
+# \rho^2 &= r^2 + a^2\cos^2{\theta} \\
+# \Delta &= r^2  - \frac{2GM}{c^2} r + a^2 + \frac{Q^2 G}{4\pi \varepsilon_0 c^2}
+# \end{align}
+
+
+# In the following, we use spherical coords (t,r,theta,phi)
 def g00(Param,Coord):
     M = Param[0]
     a = Param[1]
+    Q = Param[2]
     r = Coord[1]
     theta = Coord[2]
-    Delta = r**2.-2.*M*r+a**2.
+    Delta = r**2.-2.*M*r+a**2. + Q**2 / (4 * numpy.pi)
     rhosq = r**2.+a**2.*cos(theta)**2.
-    return -(r**2.+a**2.+2.*M*r*a**2.*sin(theta)**2./rhosq)/Delta
+    return ( (a*sin(theta))**2 - Delta ) / rhosq
 def g11(Param,Coord):
     M = Param[0]
     a = Param[1]
+    Q = Param[2]
     r = Coord[1]
     theta = Coord[2]
-    return (a**2.-2.*M*r+r**2.)/(r**2.+a**2.*cos(theta)**2.)
+    Delta = r**2.-2.*M*r+a**2. + Q**2 / (4 * numpy.pi)
+    rhosq = r**2.+a**2.*cos(theta)**2.
+    return rhosq / Delta
 def g22(Param,Coord):
     M = Param[0]
     a = Param[1]
+    Q = Param[2]
     r = Coord[1]
     theta = Coord[2]
-    return 1./(r**2.+a**2.*cos(theta)**2.)
+    Delta = r**2.-2.*M*r+a**2. + Q**2 / (4 * numpy.pi)
+    rhosq = r**2.+a**2.*cos(theta)**2.
+    return rhosq
 def g33(Param,Coord):
     M = Param[0]
     a = Param[1]
+    Q = Param[2]
     r = Coord[1]
     theta = Coord[2]
-    Delta = r**2.-2.*M*r+a**2.
+    Delta = r**2.-2.*M*r+a**2. + Q**2 / (4 * numpy.pi)
     rhosq = r**2.+a**2.*cos(theta)**2.
-    return (1./(Delta*sin(theta)**2.))*(1.-2.*M*r/rhosq)
+    return ( ( (r**2 + a**2)*sin(theta)  )**2 - (a*sin(theta)**2)**2 * Delta ) / rhosq
 
 # Off-diagonal components of the metric
 def g01(Param,Coord):
@@ -191,11 +216,12 @@ def g02(Param,Coord):
 def g03(Param,Coord):
     M = Param[0]
     a = Param[1]
+    Q = Param[2]
     r = Coord[1]
     theta = Coord[2]
-    Delta = r**2.-2.*M*r+a**2.
+    Delta = r**2.-2.*M*r+a**2. + Q**2 / (4 * numpy.pi)
     rhosq = r**2.+a**2.*cos(theta)**2.
-    return -(2.*M*r*a)/(rhosq*Delta)
+    return ( ( Delta**2 - 2*(r**2 + a**2) ) * a * sin(theta)**2 ) / rhosq
 def g12(Param,Coord):
     return 0
 def g13(Param,Coord):
