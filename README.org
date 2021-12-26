@@ -47,4 +47,4 @@ event_horyzen.run(conf_path)
 
 The geodesic in both spherical and cartesian coordinates will be saved to the output directory specified in the configuration file as =results.h5=.
 A basic plot of the geodesic is also produced.
-[[file:example-kerr-newman.png][Example Kerr-Newman Plot]]
+[[./example-kerr-newman.png][Example Kerr-Newman Plot]]
