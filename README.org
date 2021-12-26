@@ -62,7 +62,7 @@ event_horyzen.run(confs)
 
 
 
-A unique directory under the output directory specified in the configuration file will be created in the format =<output dir>/<date+time>_<name of config file>=.
+A unique directory under the output directory specified in the configuration file will be created in the format =<output-dir>/<date+time>_<name-of-config-file>=.
 So, it makes sense to give your configuration files meaningful names.
 The geodesic in both spherical and cartesian coordinates will be saved to this directory as =results.h5=.
 The configuration file used to generate the simulation will be copied to this directory as well to ensure reproducibility.
