@@ -45,6 +45,55 @@ conf_path = Path('./config.yml')
 event_horyzen.run(conf_path)
 #+end_src
 
+*or for multiple geodesics simulated in parallel*
+
+#+begin_src python :eval never
+from pathlib import Path
+from event_horyzen import event_horyzen
+
+conf_path1 = Path('./config1.yml')
+conf_path2 = Path('./config2.yml')
+conf_path3 = Path('./config3.yml')
+
+confs = [conf_path1, conf_path2, conf_path3]
+
+event_horyzen.run(confs)
+#+end_src
+
+
+
 The geodesic in both spherical and cartesian coordinates will be saved to the output directory specified in the configuration file as =results.h5=.
 A basic plot of the geodesic is also produced.
 [[./example-kerr-newman.png][Example Kerr-Newman Plot]]
+
+For the 3D plotting,
+#+begin_src python :eval never
+from pathlib import Path
+from event_horyzen import animated3Dplot as a3d
+
+results = Path("./results.h5")
+viz = a3d.Visualizer(results)
+viz.animation()
+#+end_src
+
+*or for multiple geodesics on the same plot*
+
+#+begin_src python :eval never
+from pathlib import Path
+from event_horyzen import animated3Dplot as a3d
+
+results1 = Path("./results1.h5")
+results2 = Path("./results2.h5")
+results3 = Path("./results3.h5")
+
+results = [results1, results2, results3]
+
+viz = a3d.Visualizer(results)
+viz.animation()
+#+end_src
+
+
+By default, it puts a photon sphere for a M=1 (geometrized units) schwarzschild black hole on the plot for reference.
+This can be turned off or modified in the call to =Visualizer()=.
+
+TODO *We could use a gif here*
