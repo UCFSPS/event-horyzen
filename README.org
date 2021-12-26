@@ -1,0 +1,50 @@
+#+TITLE: Event hoRyzen
+*Event hoRyzen* is a Python library designed to simulate and visualize geodesic motion around Schwarzschild, Reisner-Nordstrom, Kerr, and Kerr-Newman black holes.
+It uses a slightly modified version of Pierre Christian and Chi-kwan Chan's FANTASY geodesic integration code (see https://github.com/pierrechristian/FANTASY + Pierre Christian and Chi-kwan Chan 2021 /ApJ/ *909* 67).
+
+* Installation
+** pip
+#+begin_src bash :eval never
+pip install event_horyzen
+#+end_src
+
+*or*
+#+begin_src bash  :eval never
+pip install event_horzyen[pyqt]
+#+end_src
+
+Depending on whether or not you'd like to use the =pyqtgraph= and =opengl= plotting modules (They are not small dependencies. The option to plot with matplotlib is included in the base package).
+** Manually
+#+begin_src bash :eval never
+git clone https://github.com/UCF-SPS-Research-21/research-proj21
+#+end_src
+
+If you use Poetry for package and venv management, you can use
+#+begin_src bash :eval never
+pip install event_horyzen
+#+end_src
+
+*or*
+#+begin_src bash  :eval never
+pip install event_horzyen[pyqt]
+#+end_src
+
+If you don't, you can =pip install -r requirements.txt= or =conda install --file requirements.txt=.
+There are multiple versions of requirements.txt provided, it should be evident what each is for.
+
+* Usage
+The code is configured with a YAML configuration file.
+Please see the example at [[file:event_horyzen/config.yml]]
+
+** Example
+#+begin_src python :eval never
+from pathlib import Path
+from event_horyzen import event_horyzen
+
+conf_path = Path('./config.yml')
+event_horyzen.run(conf_path)
+#+end_src
+
+The geodesic in both spherical and cartesian coordinates will be saved to the output directory specified in the configuration file as =results.h5=.
+A basic plot of the geodesic is also produced.
+[[file:example-kerr-newman.png][Example Kerr-Newman Plot]]

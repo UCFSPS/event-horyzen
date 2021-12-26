@@ -45,7 +45,7 @@ output_dir: "/home/dave/foo/output/"
 # If you plan to compare your simulations or plot them simultaneously, `num_steps` and `time_step`
 # should be the same or their product the same across configuration files. This _must_ be true
 # if you plan to plot the geodesics concurrently using the 3D plotting library.
-num_steps: 1000
+num_steps: 50000
 time_step: 0.5 # Seconds
 integration_order: 2 # Can be 2 or 4
 omega: 1 # Controls how closely the two phase spaces interact. If trajectory varies chaotically over time, make this > 1
