@@ -1,5 +1,12 @@
-#!/usr/bin/env python3
+#! /usr/bin/env python3
 
+# This is a modified version of Pierre Christian and Chi-kwan Chan's
+# FANTASY.py <https://github.com/pierrechristian/FANTASY>
+# It was modified in 2021 by David Wright to work with the
+# Kerr-Newman metric, resolve some ambiguities regarding
+# the overloading of trigonometric functions, and reduce imported
+# dependencies.
+#
 # Copyright (C) 2020 Pierre Christian and Chi-kwan Chan
 #
 # This program is free software: you can redistribute it and/or modify
@@ -69,9 +76,8 @@ Input coordinate transformations for the 0th, 1st, 2nd, 3rd coordinate in functi
 
 ################### Code Preamble ###################
 
-from pylab import *
-from scipy import special
-import numpy
+import numpy as np
+from numpy import sin, cos
 from IPython.display import clear_output, display
 
 class dual:
@@ -129,19 +135,19 @@ class dual:
     return dual(self.f**power,self.s * power * self.f**(power - 1))
 
   def sin(self):
-    return dual(numpy.sin(self.f),self.s*numpy.cos(self.f))
+    return dual(np.sin(self.f),self.s*np.cos(self.f))
 
   def cos(self):
-    return dual(numpy.cos(self.f),-self.s*numpy.sin(self.f))
+    return dual(np.cos(self.f),-self.s*np.sin(self.f))
 
   def tan(self):
-    return sin(self)/cos(self)
+    return self.sin()/self.cos()
 
   def log(self):
-    return dual(numpy.log(self.f),self.s/self.f)
+    return dual(np.log(self.f),self.s/self.f)
 
   def exp(self):
-    return dual(numpy.exp(self.f),self.s*numpy.exp(self.f))
+    return dual(np.exp(self.f),self.s*np.exp(self.f))
 
 def dif(func,x):
     funcdual = func(dual(x,1.))
@@ -154,78 +160,72 @@ def dif(func,x):
 ################### Metric Components ###################
 
 # Diagonal components of the metric
-
-# DCW Tue 21 Dec 14:16:33 EST 2021
-# We are going to use the general Kerr-Newman metric in Boyer-Lindquist coordinates
-# Here they are in non-natural units, but we'll be setting G=c=1 in the computation.
-# \begin{align}
-# g00 &= \frac{(a\sin{\theta})^2-\Delta}{\rho^2} \\
-# g11 &= \frac{\rho^2}{\Delta} \\
-# g22 &=  \rho^2 \\
-# g33 &= \frac{((r^2+a^2)\sin{\theta})^2 - (a\sin^2{\theta})^2\Delta}{\rho^2} \\
-# g03 &= \frac{(\Delta^2-2(r^2+a^2))a\sin^2{\theta}}{\rho^2} \\
-# a      &= \frac{J}{Mc} \\
-# \rho^2 &= r^2 + a^2\cos^2{\theta} \\
-# \Delta &= r^2  - \frac{2GM}{c^2} r + a^2 + \frac{Q^2 G}{4\pi \varepsilon_0 c^2}
-# \end{align}
-
-
-# In the following, we use spherical coords (t,r,theta,phi)
 def g00(Param,Coord):
     M = Param[0]
-    a = Param[1]
+    a = Param[1] / Param[0]
     Q = Param[2]
     r = Coord[1]
     theta = Coord[2]
-    Delta = r**2.-2.*M*r+a**2. + Q**2 / (4 * numpy.pi)
+    Delta = r**2.-2.*M*r+a**2. + Q**2
     rhosq = r**2.+a**2.*cos(theta)**2.
-    return ( (a*sin(theta))**2 - Delta ) / rhosq
+    return -(r**2.+a**2.+2.*M*r*a**2.*sin(theta)**2./rhosq)/Delta
+
 def g11(Param,Coord):
     M = Param[0]
-    a = Param[1]
+    a = Param[1] / Param[0]
     Q = Param[2]
     r = Coord[1]
     theta = Coord[2]
-    Delta = r**2.-2.*M*r+a**2. + Q**2 / (4 * numpy.pi)
+    Delta = r**2.-2.*M*r+a**2. + Q**2
     rhosq = r**2.+a**2.*cos(theta)**2.
-    return rhosq / Delta
+    theta = Coord[2]
+    return (Delta)/(rhosq)
+
 def g22(Param,Coord):
     M = Param[0]
-    a = Param[1]
+    a = Param[1] / Param[0]
     Q = Param[2]
     r = Coord[1]
     theta = Coord[2]
-    Delta = r**2.-2.*M*r+a**2. + Q**2 / (4 * numpy.pi)
+    theta = Coord[2]
+    Delta = r**2.-2.*M*r+a**2. + Q**2
     rhosq = r**2.+a**2.*cos(theta)**2.
-    return rhosq
+    return 1./rhosq
+
 def g33(Param,Coord):
     M = Param[0]
-    a = Param[1]
+    a = Param[1] / Param[0]
     Q = Param[2]
     r = Coord[1]
     theta = Coord[2]
-    Delta = r**2.-2.*M*r+a**2. + Q**2 / (4 * numpy.pi)
+    theta = Coord[2]
+    Delta = r**2.-2.*M*r+a**2. + Q**2
     rhosq = r**2.+a**2.*cos(theta)**2.
-    return ( ( (r**2 + a**2)*sin(theta)  )**2 - (a*sin(theta)**2)**2 * Delta ) / rhosq
+    return (1./(Delta*sin(theta)**2.))*(1.-2.*M*r/rhosq)
 
 # Off-diagonal components of the metric
 def g01(Param,Coord):
     return 0
+
 def g02(Param,Coord):
     return 0
+
 def g03(Param,Coord):
     M = Param[0]
     a = Param[1]
     Q = Param[2]
     r = Coord[1]
     theta = Coord[2]
-    Delta = r**2.-2.*M*r+a**2. + Q**2 / (4 * numpy.pi)
+    Delta = r**2.-2.*M*r+a**2. + Q**2
     rhosq = r**2.+a**2.*cos(theta)**2.
-    return ( ( Delta**2 - 2*(r**2 + a**2) ) * a * sin(theta)**2 ) / rhosq
+    return -(2.*M*r*a)/(rhosq*Delta)
+
 def g12(Param,Coord):
     return 0
+
 def g13(Param,Coord):
     return 0
+
 def g23(Param,Coord):
     return 0
 
@@ -447,7 +447,7 @@ def phiHA(delta,omega,q1,p1,q2,p2,Param):
     dq1H_p1_2 =  0.5*(Hamil_inside(q1,p2,Param,2))
     dq1H_p1_3 =  0.5*(Hamil_inside(q1,p2,Param,3))
 
-    p1_update_array = numpy.array([dq1H_p1_0,dq1H_p1_1,dq1H_p1_2,dq1H_p1_3])
+    p1_update_array = np.array([dq1H_p1_0,dq1H_p1_1,dq1H_p1_2,dq1H_p1_3])
     p1_updated = p1 - delta*p1_update_array
 
     dp2H_q2_0 = g00(Param,q1)*p2[0] + g01(Param,q1)*p2[1] + g02(Param,q1)*p2[2] + g03(Param,q1)*p2[3]
@@ -455,7 +455,7 @@ def phiHA(delta,omega,q1,p1,q2,p2,Param):
     dp2H_q2_2 = g02(Param,q1)*p2[0] + g12(Param,q1)*p2[1] + g22(Param,q1)*p2[2] + g23(Param,q1)*p2[3]
     dp2H_q2_3 = g03(Param,q1)*p2[0] + g13(Param,q1)*p2[1] + g23(Param,q1)*p2[2] + g33(Param,q1)*p2[3]
 
-    q2_update_array = numpy.array([dp2H_q2_0,dp2H_q2_1,dp2H_q2_2,dp2H_q2_3])
+    q2_update_array = np.array([dp2H_q2_0,dp2H_q2_1,dp2H_q2_2,dp2H_q2_3])
     q2_updated = q2 + delta*q2_update_array
 
     return (q2_updated, p1_updated)
@@ -467,7 +467,7 @@ def phiHB(delta,omega,q1,p1,q2,p2,Param):
     dq2H_p2_2 =  0.5*(Hamil_inside(q2,p1,Param,2))
     dq2H_p2_3 =  0.5*(Hamil_inside(q2,p1,Param,3))
 
-    p2_update_array = numpy.array([dq2H_p2_0,dq2H_p2_1,dq2H_p2_2,dq2H_p2_3])
+    p2_update_array = np.array([dq2H_p2_0,dq2H_p2_1,dq2H_p2_2,dq2H_p2_3])
     p2_updated = p2 - delta*p2_update_array
 
     dp1H_q1_0 = g00(Param,q2)*p1[0] + g01(Param,q2)*p1[1] + g02(Param,q2)*p1[2] + g03(Param,q2)*p1[3]
@@ -475,31 +475,31 @@ def phiHB(delta,omega,q1,p1,q2,p2,Param):
     dp1H_q1_2 = g02(Param,q2)*p1[0] + g12(Param,q2)*p1[1] + g22(Param,q2)*p1[2] + g23(Param,q2)*p1[3]
     dp1H_q1_3 = g03(Param,q2)*p1[0] + g13(Param,q2)*p1[1] + g23(Param,q2)*p1[2] + g33(Param,q2)*p1[3]
 
-    q1_update_array = numpy.array([dp1H_q1_0,dp1H_q1_1,dp1H_q1_2,dp1H_q1_3])
+    q1_update_array = np.array([dp1H_q1_0,dp1H_q1_1,dp1H_q1_2,dp1H_q1_3])
     q1_updated = q1 + delta*q1_update_array
 
     return (q1_updated, p2_updated)
 
 def phiHC(delta,omega,q1,p1,q2,p2,Param):
-    q1 = numpy.array(q1)
-    q2 = numpy.array(q2)
-    p1 = numpy.array(p1)
-    p2 = numpy.array(p2)
+    q1 = np.array(q1)
+    q2 = np.array(q2)
+    p1 = np.array(p1)
+    p2 = np.array(p2)
 
-    q1_updated = 0.5*( q1+q2 + (q1-q2)*numpy.cos(2.*omega*delta) + (p1-p2)*numpy.sin(2.*omega*delta) )
-    p1_updated = 0.5*( p1+p2 + (p1-p2)*numpy.cos(2.*omega*delta) - (q1-q2)*numpy.sin(2.*omega*delta) )
+    q1_updated = 0.5*( q1+q2 + (q1-q2)*np.cos(2.*omega*delta) + (p1-p2)*np.sin(2.*omega*delta) )
+    p1_updated = 0.5*( p1+p2 + (p1-p2)*np.cos(2.*omega*delta) - (q1-q2)*np.sin(2.*omega*delta) )
 
-    q2_updated = 0.5*( q1+q2 - (q1-q2)*numpy.cos(2.*omega*delta) - (p1-p2)*numpy.sin(2.*omega*delta) )
-    p2_updated = 0.5*( p1+p2 - (p1-p2)*numpy.cos(2.*omega*delta) + (q1-q2)*numpy.sin(2.*omega*delta) )
+    q2_updated = 0.5*( q1+q2 - (q1-q2)*np.cos(2.*omega*delta) - (p1-p2)*np.sin(2.*omega*delta) )
+    p2_updated = 0.5*( p1+p2 - (p1-p2)*np.cos(2.*omega*delta) + (q1-q2)*np.sin(2.*omega*delta) )
 
     return (q1_updated, p1_updated, q2_updated, p2_updated)
 
 def updator(delta,omega,q1,p1,q2,p2,Param):
-    first_HA_step = numpy.array([q1, phiHA(0.5*delta,omega,q1,p1,q2,p2,Param)[1], phiHA(0.5*delta,omega,q1,p1,q2,p2,Param)[0], p2])
-    first_HB_step = numpy.array([phiHB(0.5*delta,omega,first_HA_step[0],first_HA_step[1],first_HA_step[2],first_HA_step[3],Param)[0], first_HA_step[1], first_HA_step[2], phiHB(0.5*delta,omega,first_HA_step[0],first_HA_step[1],first_HA_step[2],first_HA_step[3],Param)[1]])
+    first_HA_step = np.array([q1, phiHA(0.5*delta,omega,q1,p1,q2,p2,Param)[1], phiHA(0.5*delta,omega,q1,p1,q2,p2,Param)[0], p2])
+    first_HB_step = np.array([phiHB(0.5*delta,omega,first_HA_step[0],first_HA_step[1],first_HA_step[2],first_HA_step[3],Param)[0], first_HA_step[1], first_HA_step[2], phiHB(0.5*delta,omega,first_HA_step[0],first_HA_step[1],first_HA_step[2],first_HA_step[3],Param)[1]])
     HC_step = phiHC(delta,omega,first_HB_step[0],first_HB_step[1],first_HB_step[2],first_HB_step[3],Param)
-    second_HB_step = numpy.array([phiHB(0.5*delta,omega,HC_step[0],HC_step[1],HC_step[2],HC_step[3],Param)[0], HC_step[1], HC_step[2], phiHB(0.5*delta,omega,HC_step[0],HC_step[1],HC_step[2],HC_step[3],Param)[1]])
-    second_HA_step = numpy.array([second_HB_step[0], phiHA(0.5*delta,omega,second_HB_step[0],second_HB_step[1],second_HB_step[2],second_HB_step[3],Param)[1], phiHA(0.5*delta,omega,second_HB_step[0],second_HB_step[1],second_HB_step[2],second_HB_step[3],Param)[0], second_HB_step[3]])
+    second_HB_step = np.array([phiHB(0.5*delta,omega,HC_step[0],HC_step[1],HC_step[2],HC_step[3],Param)[0], HC_step[1], HC_step[2], phiHB(0.5*delta,omega,HC_step[0],HC_step[1],HC_step[2],HC_step[3],Param)[1]])
+    second_HA_step = np.array([second_HB_step[0], phiHA(0.5*delta,omega,second_HB_step[0],second_HB_step[1],second_HB_step[2],second_HB_step[3],Param)[1], phiHA(0.5*delta,omega,second_HB_step[0],second_HB_step[1],second_HB_step[2],second_HB_step[3],Param)[0], second_HB_step[3]])
 
     return second_HA_step
 
