@@ -31,7 +31,7 @@ from yaml import safe_load
 from fantasy import geodesic_integrator
 
 
-def run(conf_path):
+def run(conf_path=Path(__file__).parent / 'config.yml'):
 
     # Make the path to config file a list if it is not so that it works with the multiprocessing
     # implementation
@@ -153,11 +153,16 @@ def run(conf_path):
         np.savetxt(p/'z.txt',z, header='Cartesian Z values')
         np.save(p/'results.npy', results)
         """
+    def copy_default_config(dest=Path.cwd()):
+        copy2(Path(__file__).parent / 'config.yml', dest)
+        print("Copied default configuration to {}".format(dest))
+
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('datapath', nargs='*',
-                        default=Path(__file__).parent / './config.yml',
+                        default=Path(__file__).parent / 'config.yml',
                         type=Path,
                         help="The path(s) to the configuration file(s). Defaults to the included `config.yml` if not provided.")
     args = parser.parse_args()
