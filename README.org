@@ -37,6 +37,8 @@ The code is configured with a YAML configuration file.
 Please see the example at [[file:event_horyzen/config.yml]]
 
 ** Example
+*I use Unix paths in the examples. Windows paths will work too*
+
 If you'd like to use the default configuration, you can just leave the argument to =event_horyzen.run()= empty.
 To copy the default config and edit it, do the following.
 
