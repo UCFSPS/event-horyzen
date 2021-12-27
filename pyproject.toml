@@ -5,7 +5,7 @@ description = ""
 authors = ["David Wright <davecwright@knights.ucf.edu>"]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.11"
+python = ">=3.7,<3.11"
 PyYAML = "^6.0"
 matplotlib = "^3.5.1"
 scipy = "^1.7.3"
