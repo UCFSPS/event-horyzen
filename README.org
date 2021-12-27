@@ -37,6 +37,20 @@ The code is configured with a YAML configuration file.
 Please see the example at [[file:event_horyzen/config.yml]]
 
 ** Example
+If you'd like to use the default configuration, you can just leave the argument to =event_horyzen.run()= empty.
+To copy the default config and edit it, do the following.
+
+#+begin_src python :eval never
+from pathlib import Path
+from event_horyzen import event_horyzen
+
+dest = Path("./foo/")
+event_horyzen.copy_default_config(dest)
+#+end_src
+
+If you don't specify a destination, it will copy the file to your current working directory.
+Now, assuming you've edited the config to your liking and its named =config.yml=:
+
 #+begin_src python :eval never
 from pathlib import Path
 from event_horyzen import event_horyzen
