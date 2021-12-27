@@ -21,12 +21,12 @@ git clone https://github.com/UCF-SPS-Research-21/research-proj21
 
 If you use Poetry for package and venv management, you can use
 #+begin_src bash :eval never
-pip install event_horyzen
+poetry install event_horyzen
 #+end_src
 
 *or*
 #+begin_src bash  :eval never
-pip install event_horzyen[pyqt]
+poetry install event_horzyen[pyqt]
 #+end_src
 
 If you don't, you can =pip install -r requirements.txt= or =conda install --file requirements.txt=.
