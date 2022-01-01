@@ -24,7 +24,6 @@ from typing import Union
 
 import h5py
 import numpy as np
-import pyqtgraph as pg
 import pyqtgraph.opengl as gl
 from pyqtgraph.Qt import QtCore, QtGui
 
@@ -129,9 +128,11 @@ class Visualizer(object):
         self.start()
 
 
-# Start Qt event loop unless running in interactive mode.
-if __name__ == '__main__':
+def cli():
+    """Command line interface for animated 3D plotting module. """
+
     parser = argparse.ArgumentParser()
+    # Accept one or more arguments
     parser.add_argument('datapath', nargs='+',
                         type=Path,
                         help="The path(s) to the data file(s).")
@@ -139,3 +140,7 @@ if __name__ == '__main__':
 
     v = Visualizer(args.datapath)
     v.animation()
+
+# Start Qt event loop unless running in interactive mode.
+if __name__ == '__main__':
+    cli()
