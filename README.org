@@ -107,10 +107,10 @@ fig.show()
 For the 3D plotting,
 #+begin_src python :eval never
 from pathlib import Path
-from event_horyzen import animated3Dplot as a3d
+from event_horyzen import animated_plot as ap
 
 results = Path("./results.h5")
-viz = a3d.Visualizer(results)
+viz = ap.Visualizer(results)
 viz.animation()
 #+end_src
 
@@ -118,7 +118,7 @@ viz.animation()
 
 #+begin_src python :eval never
 from pathlib import Path
-from event_horyzen import animated3Dplot as a3d
+from event_horyzen import animated_plot as ap
 
 results1 = Path("./results1.h5")
 results2 = Path("./results2.h5")
@@ -126,7 +126,7 @@ results3 = Path("./results3.h5")
 
 results = [results1, results2, results3]
 
-viz = a3d.Visualizer(results)
+viz = ap.Visualizer(results)
 viz.animation()
 #+end_src
 
