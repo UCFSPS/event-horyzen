@@ -154,9 +154,9 @@ def run(conf_path=Path(__file__).parent / 'config.yml'):
         np.savetxt(p/'z.txt',z, header='Cartesian Z values')
         np.save(p/'results.npy', results)
         """
-    def copy_default_config(dest=Path.cwd()):
-        copy2(Path(__file__).parent / 'config.yml', dest)
-        print("Copied default configuration to {}".format(dest))
+def copy_default_config(dest=Path.cwd()):
+    copy2(Path(__file__).parent / 'config.yml', dest)
+    print("Copied default configuration to {}".format(dest))
 
 
 

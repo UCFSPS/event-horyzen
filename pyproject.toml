@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "event-horyzen"
-version = "0.1.0"
+version = "0.1.1"
 description = "Simulates geodesic motion around black holes."
 authors = ["David Wright <davecwright@knights.ucf.edu>"]
 license = "GPL-3.0-only"
