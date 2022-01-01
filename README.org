@@ -5,28 +5,30 @@ It uses a slightly modified version of Pierre Christian and Chi-kwan Chan's FANT
 * Installation
 ** pip
 #+begin_src bash :eval never
-pip install event_horyzen
+pip install event-horyzen
 #+end_src
 
 *or*
 #+begin_src bash  :eval never
-pip install event_horzyen[pyqt]
+pip install event-horzyen[pyqt]
 #+end_src
+
+(If you use =zsh= as your shell you will need to quote the package name for optional dependencies, i.e., "event-horyzen[pyqt]")
 
 Depending on whether or not you'd like to use the =pyqtgraph= and =opengl= plotting modules (They are not small dependencies. The option to plot with matplotlib is included in the base package).
 ** Manually
 #+begin_src bash :eval never
-git clone https://github.com/UCF-SPS-Research-21/research-proj21
+git clone https://github.com/UCF-SPS-Research-21/event-horyzen
 #+end_src
 
 If you use Poetry for package and venv management, you can use
 #+begin_src bash :eval never
-poetry install event_horyzen
+poetry install
 #+end_src
 
 *or*
 #+begin_src bash  :eval never
-poetry install event_horzyen[pyqt]
+poetry install -E pyqt
 #+end_src
 
 If you don't, you can =pip install -r requirements.txt= or =conda install --file requirements.txt=.
@@ -37,7 +39,7 @@ The code is configured with a YAML configuration file.
 Please see the example at [[file:event_horyzen/config.yml]]
 
 ** Example
-*I use Unix paths in the examples. Windows paths will work too*
+*I use Unix paths in the examples. Windows paths will work too --- just make sure you escape backslashes or make use of =pathlib='s functionality.*
 
 If you'd like to use the default configuration, you can just leave the argument to =event_horyzen.run()= empty.
 To copy the default config and edit it, do the following.
@@ -85,6 +87,23 @@ The configuration file used to generate the simulation will be copied to this di
 A basic plot of the geodesic is also created and saved in the directory as both a .PNG and a =pickle= file so that the figure can be reloaded and interacted with.
 [[./example-kerr-newman.png][Example Kerr-Newman Plot]]
 
+
+If you want to load the pickled Matplotlib plot, you can do the following.
+
+#+begin_src python :eval never
+import pickle as pl
+from pathlib import Path
+
+plot_path = Path("<path-to-plot>/basic-plot.pickle")
+
+with open(plot_path, "rb") as plot:
+    fig = pl.load(plot)
+
+# Now do whatever you want with the figure!
+
+fig.show()
+#+end_src
+
 For the 3D plotting,
 #+begin_src python :eval never
 from pathlib import Path
@@ -114,3 +133,36 @@ viz.animation()
 
 By default, it puts a photon sphere for a M=1 (geometrized units) schwarzschild black hole on the plot for reference.
 This can be turned off or modified in the call to =Visualizer()=.
+
+*Both the simulation and the plotting can be ran directly from the command line*
+
+First, the simulation tools.
+#+begin_src bash :results output :wrap src :eval never
+event-horyzen -h
+#+end_src
+
+#+begin_src bash :eval never
+usage: event-horyzen [-h] [datapath ...]
+
+positional arguments:
+  datapath    The path(s) to the configuration file(s). Defaults to the
+              included `config.yml` if not provided.
+
+options:
+  -h, --help  show this help message and exit
+#+end_src
+
+Now, the plotting tools.
+#+begin_src bash :results output :wrap src :eval never
+event-horyzen-plot -h
+#+end_src
+
+#+begin_src bash :eval never
+usage: event-horyzen-plot [-h] datapath [datapath ...]
+
+positional arguments:
+  datapath    The path(s) to the data file(s).
+
+options:
+  -h, --help  show this help message and exit
+#+end_src
