@@ -89,7 +89,8 @@ def run(conf_path=Path(__file__).parent / 'config.yml'):
 
     results = np.array(results)
 
-    dt_string = dt.now().strftime("%Y-%m-%dT%H:%M:%S")
+    # Colons are not present in timestamp because they are not allowed in Windows filenames!
+    dt_string = dt.now().strftime("%Y-%m-%dT%H%M%S")
 
     # Iterate over each simulation and act
     for i, sim in enumerate(filename_list):
