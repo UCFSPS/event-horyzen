@@ -28,7 +28,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from yaml import safe_load
 
-from fantasy import geodesic_integrator
+from event_horyzen.fantasy import geodesic_integrator
 
 
 def run(conf_path=Path(__file__).parent / 'config.yml'):
@@ -160,7 +160,7 @@ def run(conf_path=Path(__file__).parent / 'config.yml'):
 
 
 
-if __name__ == "__main__":
+def cli():
     parser = argparse.ArgumentParser()
     parser.add_argument('datapath', nargs='*',
                         default=Path(__file__).parent / 'config.yml',
@@ -169,3 +169,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     run(args.datapath)
+
+if __name__ == "__main__":
+    cli()
