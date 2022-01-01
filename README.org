@@ -114,5 +114,3 @@ viz.animation()
 
 By default, it puts a photon sphere for a M=1 (geometrized units) schwarzschild black hole on the plot for reference.
 This can be turned off or modified in the call to =Visualizer()=.
-
-TODO *We could use a gif here*
