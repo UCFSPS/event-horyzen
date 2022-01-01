@@ -39,8 +39,8 @@ test_particle:
     - 0
 
 # It is best to use an absolute path here.
-# Accepts Unix or Windows paths
-output_dir: "/home/dave/foo/output/"
+# Accepts Unix or Windows paths, make sure to use double backslashes "\\" for Windows paths.
+output_dir: "./output/"
 
 # If you plan to compare your simulations or plot them simultaneously, `num_steps` and `time_step`
 # should be the same or their product the same across configuration files. This _must_ be true
