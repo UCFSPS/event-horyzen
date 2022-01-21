@@ -6,6 +6,7 @@ authors = ["David Wright <davecwright@knights.ucf.edu>"]
 license = "GPL-3.0-only"
 readme = "README.md"
 homepage = "https://github.com/UCF-SPS-Research-21/event-horyzen"
+documentation = "https://event-horyzen.readthedocs.io/en/latest/"
 repository = "https://github.com/UCF-SPS-Research-21/event-horyzen"
 keywords = ["black hole", "geodesic", "simulation"]
 
@@ -46,9 +47,6 @@ pyqt = ["pyqtgraph", "PyOpenGL", "PyQt5"]
 [tool.poetry.scripts]
 event-horyzen = 'event_horyzen.event_horyzen:cli'
 event-horyzen-plot = 'event_horyzen.animated_plot:cli'
-
-[tool.poetry]
-documentation = https://event-horyzen.readthedocs.io/en/latest/
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
