@@ -18,17 +18,18 @@
 ""
 
 import argparse
-import sys
 from pathlib import Path
+import sys
 from typing import Union
 
 import h5py
 import numpy as np
+import numpy.typing as npt
 import pyqtgraph.opengl as gl
 from pyqtgraph.Qt import QtCore, QtGui
 
 
-class Visualizer(object):
+class Visualizer:
     """Visulization object
 
     Examples
@@ -38,75 +39,98 @@ class Visualizer(object):
 
     """
 
-    def __init__(self, results_files: Union[list, Path], schwarz_photon_sphere = True, mass=1):
+    def __init__(
+        self,
+        results_files: Union[list, Path],
+        schwarz_photon_sphere: bool = True,
+        mass: float = 1,
+    ):
 
-        # Make sure we are working with a list of files, important for multiple geodesics at once
+        # Make sure we are working with a list of files, important for multiple
+        # geodesics at once
         if not isinstance(results_files, list):
-            results_files = [results_files]
-        self.results_files = results_files
-        self.do_photon_sphere = schwarz_photon_sphere
-        self.mass = mass
+            results_files: list = [results_files]
+        self.results_files: list = results_files
+        self.do_photon_sphere: bool = schwarz_photon_sphere
+        self.mass: float = mass
 
         # Some initializations for later
-        self.traces = dict()
+        self.traces: dict = dict()
         self.app = QtGui.QApplication(sys.argv)
         self.w = gl.GLViewWidget()
-        self.w.opts['distance'] = 80
-        self.w.setWindowTitle('Black Hole Geodesics')
+        self.w.opts["distance"]: float = 80
+        self.w.setWindowTitle("Black Hole Geodesics")
         self.w.setGeometry(0, 110, 1920, 1080)
         self.w.show()
 
         # Create the coordinate axes
         orientation = gl.GLAxisItem()
-        orientation.setSize(x=10,y=10,z=10)
+        orientation.setSize(x=10, y=10, z=10)
         self.w.addItem(orientation)
-
 
         # Do we want to see a schwarzschild photon sphere for a reference?
         if self.do_photon_sphere:
-            sphere_mesh = gl.MeshData.sphere(rows=10, cols=10, radius=3*self.mass)
-            self.photon_sphere = gl.GLMeshItem(meshdata=sphere_mesh, smooth=True,color=(1,1,1,0.4),
-                                           shader='shaded',glOptions="translucent")
+            sphere_mesh = gl.MeshData.sphere(rows=10, cols=10, radius=3 * self.mass)
+            self.photon_sphere = gl.GLMeshItem(
+                meshdata=sphere_mesh,
+                smooth=True,
+                color=(1, 1, 1, 0.4),
+                shader="shaded",
+                glOptions="translucent",
+            )
             self.photon_sphere.translate(0, 0, 0)
             self.w.addItem(self.photon_sphere)
 
         # Go through each file given and get the cartesian coords
         for result_file in results_files:
-            with h5py.File(result_file, 'r') as hf:
+            with h5py.File(result_file, "r") as hf:
 
-                # I use the try except structure so that this works even for a single geodesic
+                # I use the try except structure so that this works even for a
+                # single geodesic
                 try:
-                    self.t = np.column_stack((self.t, hf['time'][:]))
+                    self.t: npt.NDArray[np.float64] = np.column_stack(
+                        (self.t, hf["time"][:])
+                    )
                 except AttributeError:
-                    self.t = hf['time'][:]
+                    self.t: npt.NDArray[np.float64] = hf["time"][:]
                 except ValueError:
-                    print("These simulations do not have matching dimensions!\nThe product of `num_steps` and `time_step` must be the same!")
+                    print(
+                        "These simulations do not have matching dimensions!\nThe"
+                        " product of `num_steps` and `time_step` must be the same!"
+                    )
                     sys.exit(-1)
                 try:
-                    self.x = np.column_stack((self.x, hf['x'][:]))
+                    self.x: npt.NDArray[np.float64] = np.column_stack(
+                        (self.x, hf["x"][:])
+                    )
                 except AttributeError:
-                    self.x = hf['x'][:]
+                    self.x: npt.NDArray[np.float64] = hf["x"][:]
                 try:
-                    self.y = np.column_stack((self.y, hf['y'][:]))
+                    self.y: npt.NDArray[np.float64] = np.column_stack(
+                        (self.y, hf["y"][:])
+                    )
                 except AttributeError:
-                    self.y = hf['y'][:]
+                    self.y: npt.NDArray[np.float64] = hf["y"][:]
                 try:
-                    self.z = np.column_stack((self.z, hf['z'][:]))
+                    self.z: npt.NDArray[np.float64] = np.column_stack(
+                        (self.z, hf["z"][:])
+                    )
                 except AttributeError:
-                    self.z = hf['z'][:]
+                    self.z: npt.NDArray[np.float64] = hf["z"][:]
 
         # Get the points into the form pyqtgraph expects and plot them
-        pts = np.vstack([self.x[0], self.y[0], self.z[0]]).transpose()
+        pts: npt.NDArray[np.float64] = np.vstack(
+            [self.x[0], self.y[0], self.z[0]]
+        ).transpose()
         self.traces = gl.GLScatterPlotItem(pos=pts)
         self.w.addItem(self.traces)
 
-
     def start(self):
-        if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
+        if (sys.flags.interactive != 1) or not hasattr(QtCore, "PYQT_VERSION"):
             QtGui.QApplication.instance().exec_()
 
     def set_plotdata(self, name, points, color, width):
-        self.traces[name].setData(pos=points) #, color=color, width=width)
+        self.traces[name].setData(pos=points)  # , color=color, width=width)
 
     def update(self):
         """Update the plot
@@ -115,10 +139,12 @@ class Visualizer(object):
         the first. Set this item as the current displayed point.
         """
 
-        self.x = np.roll(self.x,-10,axis=0)
-        self.y = np.roll(self.y,-10,axis=0)
-        self.z = np.roll(self.z,-10,axis=0)
-        pts = np.vstack([self.x[0], self.y[0], self.z[0]]).transpose()
+        self.x: npt.NDArray[np.float64] = np.roll(self.x, -10, axis=0)
+        self.y: npt.NDArray[np.float64] = np.roll(self.y, -10, axis=0)
+        self.z: npt.NDArray[np.float64] = np.roll(self.z, -10, axis=0)
+        pts: npt.NDArray[np.float64] = np.vstack(
+            [self.x[0], self.y[0], self.z[0]]
+        ).transpose()
         self.traces.setData(pos=pts)
 
     def animation(self):
@@ -129,18 +155,19 @@ class Visualizer(object):
 
 
 def cli():
-    """Command line interface for animated 3D plotting module. """
+    """Command line interface for animated 3D plotting module."""
 
     parser = argparse.ArgumentParser()
     # Accept one or more arguments
-    parser.add_argument('datapath', nargs='+',
-                        type=Path,
-                        help="The path(s) to the data file(s).")
+    parser.add_argument(
+        "datapath", nargs="+", type=Path, help="The path(s) to the data file(s)."
+    )
     args = parser.parse_args()
 
     v = Visualizer(args.datapath)
     v.animation()
 
+
 # Start Qt event loop unless running in interactive mode.
-if __name__ == '__main__':
+if __name__ == "__main__":
     cli()
