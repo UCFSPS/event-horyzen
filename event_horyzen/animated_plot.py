@@ -41,15 +41,17 @@ class Visualizer:
 
     def __init__(
         self,
-        results_files: Union[list, Path],
+        files: Union[list[Path], Path],
         schwarz_photon_sphere: bool = True,
         mass: float = 1,
     ):
 
         # Make sure we are working with a list of files, important for multiple
         # geodesics at once
-        if not isinstance(results_files, list):
-            results_files: list = [results_files]
+        if isinstance(files, Path):
+            results_files: list[Path] = [files]
+        else:
+            results_files = files
         self.results_files: list = results_files
         self.do_photon_sphere: bool = schwarz_photon_sphere
         self.mass: float = mass
@@ -58,7 +60,7 @@ class Visualizer:
         self.traces: dict = dict()
         self.app = QtGui.QApplication(sys.argv)
         self.w = gl.GLViewWidget()
-        self.w.opts["distance"]: float = 80
+        self.w.opts["distance"] = 80
         self.w.setWindowTitle("Black Hole Geodesics")
         self.w.setGeometry(0, 110, 1920, 1080)
         self.w.show()
