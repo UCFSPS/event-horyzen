@@ -1,4 +1,5 @@
 #! /usr/bin/env python3
+"""Geodesic integration module."""
 
 # This is a modified version of Pierre Christian and Chi-kwan Chan's
 # FANTASY.py <https://github.com/pierrechristian/FANTASY>
@@ -22,13 +23,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import sys
+
+from IPython.display import clear_output, display
+import numpy as np
+from numpy import cos, sin
+
+# TODO Add the below to sphinx docs
 """
-################### USER GUIDE ###################
+# USER GUIDE
 FANTASY is a geodesic integration code for arbitrary metrics with
 automatic differentiation. Please refer to Christian and Chan, 2021 for
 details.
 
-################### Inputing the Metric ###################
+# Inputing the Metric
 Components of the metric are stored in the functions g00, g01, g02, etc
 that can be found under the heading "Metric Components". Each of these take as
 input a list called Param, which contains the fixed parameters of the metric
@@ -57,7 +65,7 @@ def g11(Param,Coord):
     theta = Coord[2]
     return (a**2.-2.*M*r+r**2.)/(r**2.+a**2.*cos(theta)**2.)
 
-################### A Guide on Choosing omega ###################
+# A Guide on Choosing omega
 The parameter omega determines how much the two phase spaces interact with each
 other. The smaller omega is, the smaller the integration error, but if omega is
 too small, the equation of motion will become non-integrable. Thus, it is
@@ -72,7 +80,7 @@ Step 2) If the trajectory varies wildly with time (this indicates highly
         integration
 Step 3) Repeat Step 2) until trajectory converges
 
-################### Running the Code ###################
+# Running the Code
 To run the code, run the function
 geodesic_integrator(N,delta,omega,q0,p0,Param,order). N is the number of steps,
 delta is the timestep, omega is the interaction parameter between the two phase
@@ -82,7 +90,7 @@ metric (e.g., [M,a] for Kerr metric in Boyer-Lindquist coordinates), and order
 is the integration order. You can choose either order=2 for a 2nd order scheme
 or order=4 for a 4th order scheme.
 
-################### Reading the Output ###################
+# Reading the Output
 The output is a numpy array indexed by timestep. For each timestep, the output
 contains four lists:
 
@@ -100,63 +108,67 @@ As long as the equation of motion is integrable
 spaces will quickly converge, and you can choose either one as the result of
 your calculation.
 
-################### Automatic Jacobian ###################
+# Automatic Jacobian
 
 Input coordinate transformations for the 0th, 1st, 2nd, 3rd coordinate in
 functions CoordTrans0, CoordTrans1, CoordTrans2, CoordTrans3. As an example,
 coordinate transformation from Spherical Schwarzschild to Cartesian
 Schwarzschild has been provided.
-
 """
-
-# Code Preamble
-
-import sys
-
-from IPython.display import clear_output, display
-import numpy as np
-from numpy import cos, sin
 
 
 class dual:
+    """dual class.
+
+    FIXME Add more docs.
+    """
+
     def __init__(self, first, second):
+        """FIXME Add docs."""
         self.f = first
         self.s = second
 
     def __mul__(self, other):
+        """FIXME Add docs."""
         if isinstance(other, dual):
             return dual(self.f * other.f, self.s * other.f + self.f * other.s)
         else:
             return dual(self.f * other, self.s * other)
 
     def __rmul__(self, other):
+        """FIXME Add docs."""
         if isinstance(other, dual):
             return dual(self.f * other.f, self.s * other.f + self.f * other.s)
         else:
             return dual(self.f * other, self.s * other)
 
     def __add__(self, other):
+        """FIXME Add docs."""
         if isinstance(other, dual):
             return dual(self.f + other.f, self.s + other.s)
         else:
             return dual(self.f + other, self.s)
 
     def __radd__(self, other):
+        """FIXME Add docs."""
         if isinstance(other, dual):
             return dual(self.f + other.f, self.s + other.s)
         else:
             return dual(self.f + other, self.s)
 
     def __sub__(self, other):
+        """FIXME Add docs."""
         if isinstance(other, dual):
             return dual(self.f - other.f, self.s - other.s)
         else:
             return dual(self.f - other, self.s)
 
     def __rsub__(self, other):
+        """FIXME Add docs."""
         return dual(other, 0) - self
 
     def __truediv__(self, other):
+        """FIXME Add docs."""
         """when the first component of the divisor is not 0"""
         if isinstance(other, dual):
             return dual(
@@ -167,31 +179,40 @@ class dual:
             return dual(self.f / other, self.s / other)
 
     def __rtruediv__(self, other):
+        """FIXME Add docs."""
         return dual(other, 0).__truediv__(self)
 
     def __neg__(self):
+        """FIXME Add docs."""
         return dual(-self.f, -self.s)
 
     def __pow__(self, power):
+        """FIXME Add docs."""
         return dual(self.f ** power, self.s * power * self.f ** (power - 1))
 
     def sin(self):
+        """FIXME Add docs."""
         return dual(np.sin(self.f), self.s * np.cos(self.f))
 
     def cos(self):
+        """FIXME Add docs."""
         return dual(np.cos(self.f), -self.s * np.sin(self.f))
 
     def tan(self):
+        """FIXME Add docs."""
         return self.sin() / self.cos()
 
     def log(self):
+        """FIXME Add docs."""
         return dual(np.log(self.f), self.s / self.f)
 
     def exp(self):
+        """FIXME Add docs."""
         return dual(np.exp(self.f), self.s * np.exp(self.f))
 
 
 def dif(func, x):
+    """FIXME Add docs."""
     funcdual = func(dual(x, 1.0))
     if isinstance(funcdual, dual):
         return func(dual(x, 1.0)).s
@@ -204,6 +225,7 @@ def dif(func, x):
 
 # Diagonal components of the metric
 def g00(Param, Coord):
+    """FIXME Add docs."""
     M = Param[0]
     a = Param[1] / Param[0]
     Q = Param[2]
@@ -218,6 +240,7 @@ def g00(Param, Coord):
 
 
 def g11(Param, Coord):
+    """FIXME Add docs."""
     M = Param[0]
     a = Param[1] / Param[0]
     Q = Param[2]
@@ -230,6 +253,7 @@ def g11(Param, Coord):
 
 
 def g22(Param, Coord):
+    """FIXME Add docs."""
     # M = Param[0]
     a = Param[1] / Param[0]
     # Q = Param[2]
@@ -242,6 +266,7 @@ def g22(Param, Coord):
 
 
 def g33(Param, Coord):
+    """FIXME Add docs."""
     M = Param[0]
     a = Param[1] / Param[0]
     Q = Param[2]
@@ -255,14 +280,17 @@ def g33(Param, Coord):
 
 # Off-diagonal components of the metric
 def g01(Param, Coord):
+    """FIXME Add docs."""
     return 0
 
 
 def g02(Param, Coord):
+    """FIXME Add docs."""
     return 0
 
 
 def g03(Param, Coord):
+    """FIXME Add docs."""
     M = Param[0]
     a = Param[1]
     Q = Param[2]
@@ -274,14 +302,17 @@ def g03(Param, Coord):
 
 
 def g12(Param, Coord):
+    """FIXME Add docs."""
     return 0
 
 
 def g13(Param, Coord):
+    """FIXME Add docs."""
     return 0
 
 
 def g23(Param, Coord):
+    """FIXME Add docs."""
     return 0
 
 
@@ -289,6 +320,7 @@ def g23(Param, Coord):
 
 
 def dm(Param, Coord, metric, wrt):
+    """FIXME Add docs."""
     """wrt = 0,1,2,3"""
     point_d = Coord[wrt]
 
@@ -393,7 +425,7 @@ def dm(Param, Coord, metric, wrt):
 
 
 def CoordTrans0(Param, Coord):
-
+    """FIXME Add docs."""
     # M = Param[0]
     # a = Param[1]
     t = Coord[0]
@@ -402,8 +434,7 @@ def CoordTrans0(Param, Coord):
 
 
 def CoordTrans1(Param, Coord):
-
-    # M = Param[0]
+    """FIXME Add docs."""
     # a = Param[1]
     r = Coord[1]
     theta = Coord[2]
@@ -415,7 +446,7 @@ def CoordTrans1(Param, Coord):
 
 
 def CoordTrans2(Param, Coord):
-
+    """FIXME Add docs."""
     # M = Param[0]
     # a = Param[1]
     r = Coord[1]
@@ -428,7 +459,7 @@ def CoordTrans2(Param, Coord):
 
 
 def CoordTrans3(Param, Coord):
-
+    """FIXME Add docs."""
     # M = Param[0]
     # a = Param[1]
     r = Coord[1]
@@ -440,7 +471,7 @@ def CoordTrans3(Param, Coord):
 
 
 def AutoJacob(Param, Coord, i, wrt):
-
+    """FIXME Add docs."""
     point_d = Coord[wrt]
 
     point_0 = dual(Coord[0], 0)
@@ -525,6 +556,7 @@ def AutoJacob(Param, Coord, i, wrt):
 
 
 def Hamil_inside(q, p, Param, wrt):
+    """FIXME Add docs."""
     return (
         p[0] * p[0] * dm(Param, q, "g00", wrt)
         + p[1] * p[1] * dm(Param, q, "g11", wrt)
@@ -540,6 +572,7 @@ def Hamil_inside(q, p, Param, wrt):
 
 
 def phiHA(delta, omega, q1, p1, q2, p2, Param):
+    """FIXME Add docs."""
     """q1=(t1,r1,theta1,phi1), p1=(pt1,pr1,ptheta1,pphi1),
     q2=(t2,r2,theta2,phi2), p2=(pt2,pr2,ptheta2,pphi2)"""
     dq1H_p1_0 = 0.5 * (Hamil_inside(q1, p2, Param, 0))
@@ -582,6 +615,7 @@ def phiHA(delta, omega, q1, p1, q2, p2, Param):
 
 
 def phiHB(delta, omega, q1, p1, q2, p2, Param):
+    """FIXME Add docs."""
     """q1=(t1,r1,theta1,phi1), p1=(pt1,pr1,ptheta1,pphi1),
     q2=(t2,r2,theta2,phi2), p2=(pt2,pr2,ptheta2,pphi2)"""
     dq2H_p2_0 = 0.5 * (Hamil_inside(q2, p1, Param, 0))
@@ -624,6 +658,7 @@ def phiHB(delta, omega, q1, p1, q2, p2, Param):
 
 
 def phiHC(delta, omega, q1, p1, q2, p2, Param):
+    """FIXME Add docs."""
     q1 = np.array(q1)
     q2 = np.array(q2)
     p1 = np.array(p1)
@@ -659,6 +694,7 @@ def phiHC(delta, omega, q1, p1, q2, p2, Param):
 
 
 def updator(delta, omega, q1, p1, q2, p2, Param):
+    """FIXME Add docs."""
     first_HA_step = np.array(
         [
             q1,
@@ -753,6 +789,7 @@ def updator(delta, omega, q1, p1, q2, p2, Param):
 
 
 def updator_4(delta, omega, q1, p1, q2, p2, Param):
+    """FIXME Add docs."""
     z14 = 1.3512071919596578
     z04 = -1.7024143839193155
     step1 = updator(delta * z14, omega, q1, p1, q2, p2, Param)
@@ -763,6 +800,7 @@ def updator_4(delta, omega, q1, p1, q2, p2, Param):
 
 
 def geodesic_integrator(N, delta, omega, q0, p0, Param, order=2):
+    """FIXME Add docs."""
     q1 = q0
     q2 = q0
     p1 = p0
