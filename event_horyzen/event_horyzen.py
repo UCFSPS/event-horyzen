@@ -47,7 +47,6 @@ def run(conf_path: Union[Path, str, None] = None) -> None:
     --------
     FIXME: Add docs.
 
-    # noqa: DAR101
     """
     # Make the path to config file a list if it is not so that it works with the
     # multiprocessing implementation
@@ -203,7 +202,6 @@ def copy_default_config(dest: Union[Path, str] = None) -> None:
     >>> dest = Path("/tmp/default-config.yml")
     >>> copy_default_config(dest)
 
-    # noqa: DAR101
     """
     if dest is None:
         dest = Path.cwd()
