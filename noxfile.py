@@ -6,7 +6,7 @@ import nox
 from nox import session as Session
 
 package = "event_horyzen"
-nox.options.sessions = "lint", "tests", "mypy", "black", "docs/conf.py"
+nox.options.sessions = "lint", "tests", "mypy", "black"
 
 
 def install_with_constraints(session, *args, **kwargs):
