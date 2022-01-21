@@ -25,7 +25,7 @@ def install_with_constraints(session, *args, **kwargs):
 
 
 # @nox.session(python=["3.10", "3.9", "3.8", "3.7"])
-@nox.session(python=["3.10"])
+@nox.session(python=["3.7", "3.8", "3.9", "3.10"])
 def tests(session):
     """Run tests."""
     args = session.posargs or ["--cov"]
@@ -37,7 +37,7 @@ def tests(session):
 locations = "event_horyzen", "tests", "noxfile.py"
 
 
-@nox.session(python=["3.10"])
+@nox.session(python=["3.7", "3.8", "3.9", "3.10"])
 def lint(session):
     """Lint code."""
     args = session.posargs or locations
@@ -53,7 +53,7 @@ def lint(session):
     session.run("flake8", *args)
 
 
-@nox.session(python=["3.10"])
+@nox.session(python=["3.7", "3.8", "3.9", "3.10"])
 def mypy(session):
     """Check types."""
     args = session.posargs or locations
@@ -70,11 +70,11 @@ def black(session):
     session.run("black", *args)
 
 
-@nox.session(python=["3.10"])
+@nox.session(python=["3.7", "3.8", "3.9", "3.10"])
 def xdoctest(session: Session) -> None:
     """Run examples with xdoctest."""
     args = session.posargs or ["all"]
-    session.run("poetry", "install", "--no-dev", external=True)
+    session.run("poetry", "install", "--no-dev", "-E", "pyqt", external=True)
     install_with_constraints(session, "xdoctest")
     session.run("python", "-m", "xdoctest", package, *args)
 
@@ -83,5 +83,7 @@ def xdoctest(session: Session) -> None:
 def docs(session: Session) -> None:
     """Build the documentation."""
     session.run("poetry", "install", "--no-dev", "-E", "pyqt", external=True)
-    install_with_constraints(session, "sphinx", "sphinx-autodoc-typehints")
+    install_with_constraints(
+        session, "sphinx", "sphinx-autodoc-typehints", "sphinx_rtd_theme"
+    )
     session.run("sphinx-build", "docs", "docs/_build")
