@@ -6,7 +6,8 @@ import nox
 from nox import session as Session
 
 package = "event_horyzen"
-nox.options.sessions = "lint", "tests", "mypy", "black"
+# nox.options.sessions = "lint", "tests", "mypy", "black"
+nox.options.sessions = "lint", "tests", "black"
 
 
 def install_with_constraints(session, *args, **kwargs):
@@ -58,7 +59,6 @@ def mypy(session):
     """Check types."""
     args = session.posargs or locations
     install_with_constraints(session, "mypy")
-    session.run("mypy", "--install-types")
     session.run("mypy", *args)
 
 
