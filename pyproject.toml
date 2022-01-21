@@ -38,6 +38,7 @@ flake8-docstrings = "^1.6.0"
 darglint = "^1.8.1"
 xdoctest = "^0.15.10"
 sphinx-autodoc-typehints = "^1.15.3"
+sphinx-rtd-theme = "^1.0.0"
 
 [tool.poetry.extras]
 pyqt = ["pyqtgraph", "PyOpenGL", "PyQt5"]
@@ -45,6 +46,9 @@ pyqt = ["pyqtgraph", "PyOpenGL", "PyQt5"]
 [tool.poetry.scripts]
 event-horyzen = 'event_horyzen.event_horyzen:cli'
 event-horyzen-plot = 'event_horyzen.animated_plot:cli'
+
+[tool.poetry]
+documentation = https://event-horyzen.readthedocs.io/en/latest/
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
