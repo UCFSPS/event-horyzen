@@ -1,0 +1,8 @@
+# .flake8
+[flake8]
+select = B,B9,BLK,C,D,DAR,E,F,I,W
+ignore = E203,E501,W503
+max-line-length = 80
+application-import-names = event_horyzen,tests
+import-order-style = google
+docstring-convention = numpy
