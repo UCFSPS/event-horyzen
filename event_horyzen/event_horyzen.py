@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
+"""Evaluate geodesics for different spacetime backgrounds."""
 
-# Evaluate geodesics for different spacetime backgrounds, possibly multiple in parallel.
 # Copyright (C) 2021 David Wright
 #
 # This program is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@ from multiprocessing import cpu_count, Pool
 from pathlib import Path
 import pickle as pl
 from shutil import copy2
+from typing import Union
 
 import h5py
 import matplotlib.pyplot as plt
@@ -31,10 +32,27 @@ from yaml import safe_load
 from event_horyzen.fantasy import geodesic_integrator
 
 
-def run(conf_path=Path(__file__).parent / "config.yml"):
+def run(conf_path: Union[Path, str, None] = None) -> None:
+    """Run routine for geodesic motion simulation.
 
+    Given the configuration file(s), simulate the gedoesic(s).
+
+    Parameters
+    ----------
+    conf_path : Union[Path, str, None], optional
+        The path to the YAML configuration file. If None, use default
+        config.yml.
+
+    Examples
+    --------
+    FIXME: Add docs.
+
+    # noqa: DAR101
+    """
     # Make the path to config file a list if it is not so that it works with the
     # multiprocessing implementation
+    if conf_path is None:
+        conf_path = Path(__file__).parent / "config.yml"
     if not isinstance(conf_path, list):
         conf_path = [conf_path]
 
@@ -159,7 +177,34 @@ def run(conf_path=Path(__file__).parent / "config.yml"):
         """
 
 
-def copy_default_config(dest=None):
+def copy_default_config(dest: Union[Path, str] = None) -> None:
+    """Copy default configuration.
+
+    Parameters
+    ----------
+    dest : Union[Path, str], optional
+        The destination to copy to
+
+    Examples
+    --------
+    >>> from event_horyzen.event_horyzen import copy_default_config
+    >>> copy_default_config()
+
+    The above copies to your current working directory.
+    This next example copies to a chosen location.
+
+    >>> from event_horyzen.event_horyzen import copy_default_config
+    >>> copy_default_config("/tmp/default-config.yml")
+
+    Or
+
+    >>> from event_horyzen.event_horyzen import copy_default_config
+    >>> from pathlib import Path
+    >>> dest = Path("/tmp/default-config.yml")
+    >>> copy_default_config(dest)
+
+    # noqa: DAR101
+    """
     if dest is None:
         dest = Path.cwd()
     copy2(Path(__file__).parent / "config.yml", dest)
@@ -167,6 +212,7 @@ def copy_default_config(dest=None):
 
 
 def cli():
+    """CLI interface for event_horyzen module."""
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "datapath",
