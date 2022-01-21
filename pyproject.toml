@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "event-horyzen"
-version = "0.1.1"
+version = "0.1.2"
 description = "Simulates geodesic motion around black holes."
 authors = ["David Wright <davecwright@knights.ucf.edu>"]
 license = "GPL-3.0-only"
@@ -24,8 +24,20 @@ PyOpenGL = {version = "^3.1.5", optional = true}
 PyQt5 = {version = "^5.15.6", optional = true}
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
+pytest = "^6.2.5"
 isort = "^5.10.1"
+black = "^21.12b0"
+flake8 = "^4.0.1"
+flake8-black = "^0.2.3"
+flake8-bugbear = "^22.1.11"
+flake8-import-order = "^0.18.1"
+coverage = {extras = ["toml"], version = "^6.2"}
+pytest-cov = "^3.0.0"
+mypy = "^0.931"
+flake8-docstrings = "^1.6.0"
+darglint = "^1.8.1"
+xdoctest = "^0.15.10"
+sphinx-autodoc-typehints = "^1.15.3"
 
 [tool.poetry.extras]
 pyqt = ["pyqtgraph", "PyOpenGL", "PyQt5"]
