@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
+"""Plot animated geodesics in 3D using hardware acceleration."""
 
-# Plot animated geodesics in 3D using hardware acceleration, possibly multiple at once.
 # Copyright (C) 2021 David Wright
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
-""
 
 import argparse
 from pathlib import Path
@@ -30,13 +29,28 @@ from pyqtgraph.Qt import QtCore, QtGui
 
 
 class Visualizer:
-    """Visulization object
+    """Visulization object.
+
+    Parameters
+    ----------
+    files : Union[list[Path], Path]
+        The HDF5 file(s) with the geodesic(s).
+    schwarz_photon_sphere : bool
+        Plot a photon sphere.
+    mass : float
+        Mass for photon sphere calculation.
+
+    Attributes
+    ----------
+    results_files : list[Path]
+        The list of `Path` objects that represent the results files.
 
     Examples
     --------
-    >>> v = Visualizer(['results1.h5', 'results2.h5'])
-    >>> v.animation()
+    This example assumes you have "results1.h5" and "results2.h5" available
 
+    >>> v = Visualizer(["results1.h5", "results2.h5"]) # doctest: +SKIP
+    >>> v.animation() # doctest: +SKIP
     """
 
     def __init__(
@@ -45,7 +59,7 @@ class Visualizer:
         schwarz_photon_sphere: bool = True,
         mass: float = 1,
     ):
-
+        """Initialize Visualizer instance."""
         # Make sure we are working with a list of files, important for multiple
         # geodesics at once
         if isinstance(files, Path):
@@ -128,19 +142,20 @@ class Visualizer:
         self.w.addItem(self.traces)
 
     def start(self):
+        """Start the Qt Application."""
         if (sys.flags.interactive != 1) or not hasattr(QtCore, "PYQT_VERSION"):
             QtGui.QApplication.instance().exec_()
 
     def set_plotdata(self, name, points, color, width):
+        """Plot the data."""
         self.traces[name].setData(pos=points)  # , color=color, width=width)
 
     def update(self):
-        """Update the plot
+        """Update the plot.
 
         Roll the coordinate arrays so that the next item in the array becomes
         the first. Set this item as the current displayed point.
         """
-
         self.x: npt.NDArray[np.float64] = np.roll(self.x, -10, axis=0)
         self.y: npt.NDArray[np.float64] = np.roll(self.y, -10, axis=0)
         self.z: npt.NDArray[np.float64] = np.roll(self.z, -10, axis=0)
@@ -150,6 +165,7 @@ class Visualizer:
         self.traces.setData(pos=pts)
 
     def animation(self):
+        """Start the animation."""
         timer = QtCore.QTimer()
         timer.timeout.connect(self.update)
         timer.start(20)
@@ -158,7 +174,6 @@ class Visualizer:
 
 def cli():
     """Command line interface for animated 3D plotting module."""
-
     parser = argparse.ArgumentParser()
     # Accept one or more arguments
     parser.add_argument(
