@@ -1,12 +1,8 @@
----
-author: David Wright
-title: Event hoRyzen
----
-
 [![](https://badge.fury.io/py/event-horyzen.svg)](https://pypi.org/project/event-horyzen/)
 [![](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/UCF-SPS-Research-21/event-horyzen-example/HEAD?labpath=.%2Fevent-horyzen-example.ipynb)
 [![](https://github.com/UCF-SPS-Research-21/event-horyzen/workflows/Tests/badge.svg)](https://github.com/UCF-SPS-Research-21/event-horyzen/actions?workflow=Tests)
 [![](https://readthedocs.org/projects/event-horyzen/badge/?version=latest&style=flat.svg)](https://event-horyzen.readthedocs.io/)
+[![](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 **Event hoRyzen** is a Python library designed to simulate and visualize
 geodesic motion around Schwarzschild, Reissner-Nordstrom, Kerr, and
@@ -204,3 +200,63 @@ options:
 ```
 
 # Contributing
+
+## Setting Up Dev Environment
+
+Dependencies are managed with
+[Poetry](https://python-poetry.org/docs/master/#installing-with-the-official-installer).
+Tests, documentation, and linting automation are handled by
+[Nox](https://nox.thea.codes/en/stable/).
+
+``` bash
+pip install nox
+poetry install --dev
+```
+
+Code style is handled by [Black](https://github.com/psf/black).
+Pre-commit hooks are available at
+[file:.pre-commit-config.yaml](.pre-commit-config.yaml). You can install
+them with `pre-commit installed at .git/hooks/pre-commit`. By default it
+runs `flake8` and `black` before commit.
+
+To run tests, lint, and format code simultaneously, run
+
+``` bash
+nox -r
+```
+
+On first run, `nox` will be very slow while it creates its virtual
+environments. On subsequent runs, the `-r` option will make it reuse the
+environments.
+
+To run specific `nox` sessions, specify them like
+
+``` bash
+nox -rs <session>
+```
+
+The available sessions are `tests`, `lint`, `mypy`, `black`, `xdoctest`,
+and `docs`.
+
+`Sphinx` builds the documentation, and on commit readthedocs will build
+current documentation. If you want to build the documentation locally,
+run
+
+``` bash
+nox -rs docs
+```
+
+For tests (or any of the sessions) that you want to run on specific
+files, run them like
+
+``` bash
+nox -rs tests -- tests/test_event_horyzen.py
+nox -rs lint -- event_horyzen/fantasy.py
+```
+
+## Making Pull Requests
+
+1.  Fork the repository.
+2.  Make a feature branch in the fork with your changes.
+3.  Make the Pull Request with a reasonably detailed description of your
+    changes.
