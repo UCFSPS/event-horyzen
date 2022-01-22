@@ -4,6 +4,7 @@
 [[https://mybinder.org/v2/gh/UCF-SPS-Research-21/event-horyzen-example/HEAD?labpath=.%2Fevent-horyzen-example.ipynb][https://mybinder.org/badge_logo.svg]]
 [[https://github.com/UCF-SPS-Research-21/event-horyzen/actions?workflow=Tests][https://github.com/UCF-SPS-Research-21/event-horyzen/workflows/Tests/badge.svg]]
 [[https://event-horyzen.readthedocs.io/][https://readthedocs.org/projects/event-horyzen/badge/?version=latest&style=flat.svg]]
+[[https://github.com/psf/black][https://img.shields.io/badge/code%20style-black-000000.svg]]
 
 *Event hoRyzen* is a Python library designed to simulate and visualize geodesic motion around Schwarzschild, Reissner-Nordstrom, Kerr, and Kerr-Newman black holes.
 It uses a slightly modified version of Pierre Christian and Chi-kwan Chan's FANTASY geodesic integration code (see https://github.com/pierrechristian/FANTASY + Pierre Christian and Chi-kwan Chan 2021 /ApJ/ *909* 67).
