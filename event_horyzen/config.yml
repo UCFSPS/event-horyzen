@@ -49,3 +49,4 @@ num_steps: 50000
 time_step: 0.5 # Seconds
 integration_order: 2 # Can be 2 or 4
 omega: 1 # Controls how closely the two phase spaces interact. If trajectory varies chaotically over time, make this > 1
+h5py: True
