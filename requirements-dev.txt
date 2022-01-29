@@ -141,7 +141,7 @@ importlib-metadata==4.2.0; python_version < "3.8" and python_version >= "3.6" an
 iniconfig==1.1.1; python_version >= "3.6" \
     --hash=sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3 \
     --hash=sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32
-ipython==7.30.1; python_version >= "3.7" \
+ipython==7.31.1; python_version >= "3.7" \
     --hash=sha256:fc60ef843e0863dd4e24ab2bb5698f071031332801ecf8d1aeb4fb622056545c \
     --hash=sha256:cb6aef731bf708a7727ab6cde8df87f0281b1427d41e65d62d4b68934fa54e97
 isort==5.10.1; python_full_version >= "3.6.1" and python_version < "4.0" \
