@@ -81,7 +81,7 @@ def run(conf_path: Union[Path, str, None] = None) -> None:
         time_step = conf["time_step"]
         integration_order = conf["integration_order"]
         omega = conf["omega"]
-        h5py_conf = conf["h5py"]
+        use_hdf5 = conf.get("use_hdf5", True)
 
         # The arguments are stored as a tuple so they can be mapped using Pool.starmap()
         # An example argument tuple with added information is shown below
@@ -152,7 +152,7 @@ def run(conf_path: Union[Path, str, None] = None) -> None:
         # h5 files show significant file size reductions, and this is very
         # evident for N>10,000 simulations. If you don't care, see the
         # numpy.savetxt block below.
-        if h5py_conf:
+        if use_hdf5:
             with h5py.File(p / "results.h5", "w") as hf:
                 hf.create_dataset("time", data=t)
                 hf.create_dataset("radius", data=r)
@@ -164,9 +164,9 @@ def run(conf_path: Union[Path, str, None] = None) -> None:
 
         print("Output saved in", p)
 
-        # If you prefer not to work with h5 files, set h5py in the configuration
+        # If you prefer not to work with h5 files, set use_hdf5 in the configuration
         # file to False.
-        if not h5py_conf:
+        if not use_hdf5:
             np.savetxt(p / "t.txt", t, header="Time values")
             np.savetxt(p / "r.txt", r, header="Radius values")
             np.savetxt(p / "theta.txt", theta, header="Theta values")
