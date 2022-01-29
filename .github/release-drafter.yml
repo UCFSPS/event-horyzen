@@ -7,6 +7,8 @@ categories:
     label: 'ci'
   - title: ':books: Documentation'
     label: 'documentation'
+  - title: ':package: Dependencies'
+    label: 'dependency'
   - title: ':rocket: Features'
     label: 'enhancement'
   - title: ':beetle: Fixes'
@@ -17,10 +19,25 @@ categories:
     label: 'refactoring'
   - title: ':fire: Removals and Deprecations'
     label: 'removal'
+  - title: ':shield: Security'
+    label: 'security'
   - title: ':lipstick: Style'
     label: 'style'
   - title: ':rotating_light: Testing'
     label: 'testing'
+change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
+change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
+version-resolver:
+  major:
+    labels:
+      - 'major'
+  minor:
+    labels:
+      - 'minor'
+  patch:
+    labels:
+      - 'patch'
+  default: patch
 template: |
   ## What’s Changed
 
