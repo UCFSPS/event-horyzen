@@ -8,7 +8,7 @@ categories:
   - title: ':books: Documentation'
     label: 'documentation'
   - title: ':package: Dependencies'
-    label: 'dependency'
+    label: 'dependencies'
   - title: ':rocket: Features'
     label: 'enhancement'
   - title: ':beetle: Fixes'
