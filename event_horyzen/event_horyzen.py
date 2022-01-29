@@ -81,6 +81,7 @@ def run(conf_path: Union[Path, str, None] = None) -> None:
         time_step = conf["time_step"]
         integration_order = conf["integration_order"]
         omega = conf["omega"]
+        use_hdf5 = conf.get("use_hdf5", True)
 
         # The arguments are stored as a tuple so they can be mapped using Pool.starmap()
         # An example argument tuple with added information is shown below
@@ -151,29 +152,29 @@ def run(conf_path: Union[Path, str, None] = None) -> None:
         # h5 files show significant file size reductions, and this is very
         # evident for N>10,000 simulations. If you don't care, see the
         # numpy.savetxt block below.
-        with h5py.File(p / "results.h5", "w") as hf:
-            hf.create_dataset("time", data=t)
-            hf.create_dataset("radius", data=r)
-            hf.create_dataset("theta", data=theta)
-            hf.create_dataset("phi", data=phi)
-            hf.create_dataset("x", data=x)
-            hf.create_dataset("y", data=y)
-            hf.create_dataset("z", data=z)
+        if use_hdf5:
+            with h5py.File(p / "results.h5", "w") as hf:
+                hf.create_dataset("time", data=t)
+                hf.create_dataset("radius", data=r)
+                hf.create_dataset("theta", data=theta)
+                hf.create_dataset("phi", data=phi)
+                hf.create_dataset("x", data=x)
+                hf.create_dataset("y", data=y)
+                hf.create_dataset("z", data=z)
 
         print("Output saved in", p)
 
-        # If you prefer not to work with h5 files, uncomment this block and
-        # comment out the h5py block above
-        """
-        np.savetxt(p/'t.txt',t, header='Time values')
-        np.savetxt(p/'r.txt',r, header='Radius values')
-        np.savetxt(p/'theta.txt',theta, header='Theta values')
-        np.savetxt(p/'phi.txt',phi, header='Phi values')
-        np.savetxt(p/'x.txt',x, header='Cartesian X values')
-        np.savetxt(p/'y.txt',y, header='Cartesian Y values')
-        np.savetxt(p/'z.txt',z, header='Cartesian Z values')
-        np.save(p/'results.npy', results)
-        """
+        # If you prefer not to work with h5 files, set use_hdf5 in the configuration
+        # file to False.
+        if not use_hdf5:
+            np.savetxt(p / "t.txt", t, header="Time values")
+            np.savetxt(p / "r.txt", r, header="Radius values")
+            np.savetxt(p / "theta.txt", theta, header="Theta values")
+            np.savetxt(p / "phi.txt", phi, header="Phi values")
+            np.savetxt(p / "x.txt", x, header="Cartesian X values")
+            np.savetxt(p / "y.txt", y, header="Cartesian Y values")
+            np.savetxt(p / "z.txt", z, header="Cartesian Z values")
+            np.save(p / "results.npy", results)
 
 
 def copy_default_config(dest: Union[Path, str] = None) -> None:
