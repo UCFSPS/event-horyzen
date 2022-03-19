@@ -216,7 +216,7 @@ poetry install --dev
 Code style is handled by [Black](https://github.com/psf/black).
 Pre-commit hooks are available at
 [file:.pre-commit-config.yaml](.pre-commit-config.yaml). You can install
-them with `pre-commit installed at .git/hooks/pre-commit`. By default it
+them with `pre-commit install`. By default it
 runs `flake8` and `black` before commit.
 
 To run tests, lint, and format code simultaneously, run
